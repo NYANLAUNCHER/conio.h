@@ -111,10 +111,10 @@ Contributions
 
 
 */
+#pragma once
 
-
-#ifndef __CONIO4LINUX_H
-#define __CONIO4LINUX_H
+//#ifndef __CONIO_H
+//#define __CONIO_H
 
 #include <stdio.h>//necesaria
 #include <unistd.h>//necesario
@@ -141,201 +141,172 @@ Contributions
 #define BLINK        128
 
 
-class __CONIO_H{
-  private:
-    int bgc;
-  public:
-    __CONIO_H(){
-      bgc=40;
-      }
-      
-    ~__CONIO_H(){
-      printf("\033[m");
-      }
-      
-    void clreol(){
-      printf("\033[K");
-      }
-      
-    void insline(){
-      printf( "\x1b[1L");
-      }
-  
-    void delline(){
-      printf( "\033[1M");
-      }
+int __conio_bgc = 40;
+    
+void clreol(){
+    printf("\033[K");
+}
+    
+void insline(){
+    printf( "\x1b[1L");
+}
 
-    void gotoxy(int x,int y){
-      printf("\033[%d;%df",y,x);
-      }
-      
-    void clrscr(){
-      printf( "\033[%dm\033[2J\033[1;1f",bgc);
-      }
-      
-    void textbackground(int color){
-      switch(color%16){
-	  case BLACK:          bgc=40;break;
-	  case BLUE:           bgc=44;break;
-	  case GREEN:          bgc=42;break;
-	  case CYAN:           bgc=46;break;
-	  case RED:            bgc=41;break;
-	  case MAGENTA:        bgc=45;break;
-	  case BROWN:          bgc=43;break;
-	  case LIGHTGRAY:      bgc=47;break;
-	  case DARKGRAY:       bgc=40;break;
-	  case LIGHTBLUE:      bgc=44;break;
-	  case LIGHTGREEN:     bgc=42;break;
-	  case LIGHTCYAN:      bgc=46;break;
-	  case LIGHTRED:       bgc=41;break;
-	  case LIGHTMAGENTA:   bgc=45;break;
-	  case YELLOW:         bgc=43;break;
-	  case WHITE:          bgc=47;break;
-	}
-      }
+void delline(){
+    printf( "\033[1M");
+}
 
-    void textcolor(short color){  
-      switch(color%16){
-	  case BLACK:          printf("\033[0;%d;%dm",30,bgc);break;
-	  case BLUE:           printf("\033[0;%d;%dm",34,bgc);break;
-	  case GREEN:          printf("\033[0;%d;%dm",32,bgc);break;
-	  case CYAN:           printf("\033[0;%d;%dm",36,bgc);break;
-	  case RED:            printf("\033[0;%d;%dm",31,bgc);break;
-	  case MAGENTA:        printf("\033[0;%d;%dm",35,bgc);break;
-	  case BROWN:          printf("\033[0;%d;%dm",33,bgc);break;
-	  case LIGHTGRAY:      printf("\033[0;%d;%dm",37,bgc);break;
-	  case DARKGRAY:       printf("\033[1;%d;%dm",30,bgc);break;
-	  case LIGHTBLUE:      printf("\033[1;%d;%dm",34,bgc);break;
-	  case LIGHTGREEN:     printf("\033[1;%d;%dm",32,bgc);break;
-	  case LIGHTCYAN:      printf("\033[1;%d;%dm",36,bgc);break;
-	  case LIGHTRED:       printf("\033[1;%d;%dm",31,bgc);break;
-	  case LIGHTMAGENTA:   printf("\033[1;%d;%dm",35,bgc);break;
-	  case YELLOW:         printf("\033[1;%d;%dm",33,bgc);break;
-	  case WHITE:          printf("\033[1;%d;%dm",37,bgc);break;
-	}
-      }
+void gotoxy(int x,int y){
+    printf("\033[%d;%df",y,x);
+}
     
-    int ungetch(int ch){
-      return ungetc(ch, stdin);
-      }
+void clrscr(){
+    printf( "\033[%dm\033[2J\033[1;1f",__conio_bgc);
+}
     
-    int getch_echo(bool echo=true){
-      struct termios oldt, newt;
-      int ch;
-      tcgetattr( STDIN_FILENO, &oldt );
-      newt = oldt;
-      newt.c_lflag &= ~ICANON;
-      if(echo)
-	newt.c_lflag &=  ECHO;
-      else
-	newt.c_lflag &= ~ECHO;
-      tcsetattr( STDIN_FILENO, TCSANOW, &newt );
-      ch = getchar();
-      tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
-      return ch;
-      }
-      
-    int getch(){
-      getch_echo(false);
-      }
-      
-    int getche(){
-      getch_echo(true);
-      }
-      
-    int wherexy(int&x,int&y){
-      printf("\033[6n");
-      if(getch() != '\x1B') return 0;
-      if(getch() != '\x5B') return 0;
-      int in;
-      int ly = 0;
-      while((in = getch()) != ';')
-      ly = ly * 10 + in - '0';	
-      int lx = 0;
-      while((in = getch()) != 'R')
-      lx = lx * 10 + in - '0';
-      x = lx;
-      y = ly;
-      }
+void textbackground(int color){
+    switch(color%16){
+        case BLACK:          __conio_bgc=40;break;
+        case BLUE:           __conio_bgc=44;break;
+        case GREEN:          __conio_bgc=42;break;
+        case CYAN:           __conio_bgc=46;break;
+        case RED:            __conio_bgc=41;break;
+        case MAGENTA:        __conio_bgc=45;break;
+        case BROWN:          __conio_bgc=43;break;
+        case LIGHTGRAY:      __conio_bgc=47;break;
+        case DARKGRAY:       __conio_bgc=40;break;
+        case LIGHTBLUE:      __conio_bgc=44;break;
+        case LIGHTGREEN:     __conio_bgc=42;break;
+        case LIGHTCYAN:      __conio_bgc=46;break;
+        case LIGHTRED:       __conio_bgc=41;break;
+        case LIGHTMAGENTA:   __conio_bgc=45;break;
+        case YELLOW:         __conio_bgc=43;break;
+        case WHITE:          __conio_bgc=47;break;
+    }
+}
 
-    int wherex(){
-      int x=0,y=0;
-      wherexy(x,y);
-      return x;
-      }
-      
-    int wherey(){
-      int x=0,y=0;
-      wherexy(x,y);
-      return y;
-      } 
+void textcolor(short color){  
+    switch(color%16){
+        case BLACK:          printf("\033[0;%d;%dm",30,__conio_bgc);break;
+        case BLUE:           printf("\033[0;%d;%dm",34,__conio_bgc);break;
+        case GREEN:          printf("\033[0;%d;%dm",32,__conio_bgc);break;
+        case CYAN:           printf("\033[0;%d;%dm",36,__conio_bgc);break;
+        case RED:            printf("\033[0;%d;%dm",31,__conio_bgc);break;
+        case MAGENTA:        printf("\033[0;%d;%dm",35,__conio_bgc);break;
+        case BROWN:          printf("\033[0;%d;%dm",33,__conio_bgc);break;
+        case LIGHTGRAY:      printf("\033[0;%d;%dm",37,__conio_bgc);break;
+        case DARKGRAY:       printf("\033[1;%d;%dm",30,__conio_bgc);break;
+        case LIGHTBLUE:      printf("\033[1;%d;%dm",34,__conio_bgc);break;
+        case LIGHTGREEN:     printf("\033[1;%d;%dm",32,__conio_bgc);break;
+        case LIGHTCYAN:      printf("\033[1;%d;%dm",36,__conio_bgc);break;
+        case LIGHTRED:       printf("\033[1;%d;%dm",31,__conio_bgc);break;
+        case LIGHTMAGENTA:   printf("\033[1;%d;%dm",35,__conio_bgc);break;
+        case YELLOW:         printf("\033[1;%d;%dm",33,__conio_bgc);break;
+        case WHITE:          printf("\033[1;%d;%dm",37,__conio_bgc);break;
+    }
+}
 
-    int kbhit(){
-      struct termios oldt, newt;
-      int ch;
-      int oldf;    
-      tcgetattr(STDIN_FILENO, &oldt);
-      newt = oldt;
-      newt.c_lflag &= ~(ICANON | ECHO);
-      tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-      oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-      fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);    
-      ch = getchar();    
-      tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-      fcntl(STDIN_FILENO, F_SETFL, oldf);    
-      if(ch != EOF){
-	ungetc(ch, stdin);
-	return 1;
-	}    
-      return 0;
-      }
+int ungetch(int ch){
+    return ungetc(ch, stdin);
+    }
+
+int getch_echo(int echo){
+    echo=1;
+    struct termios oldt, newt;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldt );
+    newt = oldt;
+    newt.c_lflag &= ~ICANON;
+    if (echo)
+        newt.c_lflag &=  ECHO;
+    else
+        newt.c_lflag &= ~ECHO;
+
+    tcsetattr( STDIN_FILENO, TCSANOW, &newt );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+    return ch;
+}
     
-    int putch(const char c){
-      printf("%c",c);
-      return (int)c;
-      }
-      
-    int cputs(const char*str){
-      printf(str);
-      return 0;
-      }
-        
-    char*getpass(const char*prompt){
-      //implementada en unistd.h
-      }
-      
-    int gettext(int l,int t,int r,int b,void*destination){
-      
-      }
+int getch(){
+    return getch_echo(0);
+}
     
+int getche(){
+    return getch_echo(1);
+}
     
-  }___CONIO_H;
+int wherexy(int x, int y){
+    printf("\033[6n");
+    if(getch() != '\x1B')
+        return 0;
+    if(getch() != '\x5B')
+        return 0;
+
+    int in;
+    int ly = 0;
+    while((in = getch()) != ';')
+        ly = ly * 10 + in - '0';	
+
+    int lx = 0;
+    while((in = getch()) != 'R')
+        lx = lx * 10 + in - '0';
+
+    x = lx;
+    y = ly;
+    return 0;
+}
+
+int wherex(){
+    int x=0,y=0;
+    wherexy(x,y);
+    return x;
+}
+    
+int wherey(){
+    int x=0,y=0;
+    wherexy(x,y);
+    return y;
+} 
+
+int kbhit(){
+    struct termios oldt, newt;
+    int ch;
+    int oldf;    
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);    
+    ch = getchar();    
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);    
+
+    if(ch != EOF){
+        ungetc(ch, stdin);
+        return 1;
+    }    
+    return 0;
+}
+
+int putch(const char c){
+    printf("%c",c);
+    return (int)c;
+}
+    
+int cputs(const char* str){
+    printf("%s", str);
+    return 0;
+}
+    
+//implementada en unistd.h
+char* getpass(const char*prompt);
+int gettext(int l,int t,int r,int b,void*destination);
+    
 
 #define cprintf printf
 #define cscanf scanf
 #define cgets gets
-  
-
-  
-#define gotoxy          ___CONIO_H.gotoxy
-#define clrscr          ___CONIO_H.clrscr
-#define textcolor       ___CONIO_H.textcolor
-#define textbackground  ___CONIO_H.textbackground
-#define wherex          ___CONIO_H.wherex
-#define wherey          ___CONIO_H.wherey
-#define ungetch         ___CONIO_H.ungetch  
-#define getch           ___CONIO_H.getch
-#define getche          ___CONIO_H.getche
-#define kbhit           ___CONIO_H.kbhit
-#define putch           ___CONIO_H.putch
-#define putchar         ___CONIO_H.putch
-#define cputs           ___CONIO_H.cputs
-#define clreol          ___CONIO_H.clreol
-#define insline         ___CONIO_H.insline
-#define delline         ___CONIO_H.delline
-//#define getpass         ___CONIO_H.getpass
-#define gettext         ___CONIO_H.gettext
-
 
 //DEV C++ only have the next funtions (version: 4.9.9.2)
 #define _cprintf        cprintf
@@ -346,5 +317,5 @@ class __CONIO_H{
 #define _putch          putch
 #define _ungetch        ungetch
 
-#endif
+//#endif
 
